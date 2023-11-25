@@ -18,7 +18,7 @@ exports.auth=async (req,res,next)=>{
 
             const decode = jwt.decode(token,process.env.JWT_SECRET)
             console.log(decode)
-            req.user(decode)
+            req.user=decode
 
         }catch(err){
             return res.status(401).json({
