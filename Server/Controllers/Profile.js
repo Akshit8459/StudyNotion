@@ -1,5 +1,7 @@
 const User=require("../Models/User")
 const Profile=require("../Models/Profile")
+const {uploadImageToCloudinary}=require("../Utils/ImageUploader")
+require("dotenv").config()
 
 
 exports.updateProfile=async (req,res)=>{
@@ -15,7 +17,8 @@ exports.updateProfile=async (req,res)=>{
             })
         }
 
-        const userDetails=await User.findById({id})
+        const userDetails=await User.findById(id)
+        console.log("userDetails=>",userDetails.additionalDetails)
         const profileDetails=await Profile.findByIdAndUpdate({id:userDetails.additionalDetails},{dateOfBirth:dateOfBirth,about:about,gender:gender,contactNumber:contactNumber},{new:true})
 
         return res.status(200).json({
@@ -25,6 +28,7 @@ exports.updateProfile=async (req,res)=>{
         })
 
     }catch(err){
+        console.log(err)
         return res.status(500).json({
             success:false,
             message:"Error While Updating Profile"
@@ -82,14 +86,66 @@ exports.getAllUserDetails=async (req,res)=>{
         return res.status(200).json({
             success:true,
             message:" Success in Fetching Account's all Details",
+            data:userDetails
         })
 
 
 
     }catch(err){
+        console.log(err)
         return res.status(500).json({
             success:false,
             message:"Error While Fetching Account Details"
         })
+    }
+}
+
+exports.getEnrolledCourses=async (req,res)=>{
+    try{
+        const userId=req.user.id
+        const userDetails=await User.find({_id:userId}).populate("courses").exec()
+        if(!userDetails){
+            return res.status(404).json({
+                success:false,
+                message:"data not found"
+            })
+        }
+        return res.status(200).json({
+            success:true,
+            message:"enrolled courses fetched successfully",
+            data:userDetails.courses
+        })
+    }catch(err){
+        return res.status(500).json({
+                success:false,
+                message:"error while fetching enrolled courses"
+            })
+    }
+}
+
+
+exports.updateDisplayPictures=async (req,res)=>{
+    try{
+        // some code i am not able to think of
+        // validate from body and const file too
+        const image=req.file.profileImage
+        if(!image){
+            return res.status(404).json({
+                success:false,
+                message:"data not found"
+            })
+        }
+        // upload to cloudinary
+        const updatedImage=await uploadImageToCloudinary(image,process.env.FOLDER_NAME)
+        
+        // await Profile.findByIdAndUpdate({_id:})
+        // fetch db and update
+        // send statuse
+
+    }catch(err){
+        return res.status(500).json({
+                success:false,
+                message:"error while  updating display picture"
+            })
     }
 }

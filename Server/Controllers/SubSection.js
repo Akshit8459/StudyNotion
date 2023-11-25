@@ -38,7 +38,7 @@ exports.createSubSection=async (req,res)=>{
 
 
 
-exports.updateSection =async (req,res)=>{
+exports.updateSubSection =async (req,res)=>{
     try{
         const {title,timeDuration,description,sectionId,subSectionId}=req.body
         const video=req.files.videoFile

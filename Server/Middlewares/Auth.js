@@ -5,8 +5,9 @@ const User=require("../Models/User")
 //Auth
 exports.auth=async (req,res,next)=>{
     try{
-        const token = req.header("Authorisation").replace("Bearer ","") || req.cookies.token || req.body.token
-
+        // const token = req.header("Authorisation").replace("Bearer ","") || req.cookies.token || req.body.token
+        const token=req.cookies.token || req.body.token
+        console.log(token)
         if(!token){
             return res.status(401).json({
                 success:false,
@@ -29,7 +30,7 @@ exports.auth=async (req,res,next)=>{
         next()
         
     }catch(err){
-
+        console.log(err)
         return res.status(401).json({
             success:false,
             message:"Something went wrong while validating the token"

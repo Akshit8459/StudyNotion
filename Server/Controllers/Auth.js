@@ -41,10 +41,12 @@ exports.signUp=async (req,res)=>{
                 success:false,
                 message:"OTP not Found"
             })
-        }else if(otp!== recentOTP.otp){
+        }else if(otp!== recentOTP[0].otp){
             return res.status(400).json({
                 success:false,
-                message:"Invalid OTP"
+                message:"Invalid OTP",
+                otp:recentOTP,
+                received:otp
             })
         }
 
@@ -65,11 +67,12 @@ exports.signUp=async (req,res)=>{
             password:hashedPassword,
             accountType,
             additionalDetails:profileDetail._id,
-            image:"https:api.dicebear.com/5.x/initials/svg?seed="+firstname+lastname})
+            image:"https:api.dicebear.com/5.x/initials/svg?seed="+firstName+" "+lastName})
         
         return res.status(200).json({
             success:true,
-            message:"User SignedUp successfully"
+            message:"User SignedUp successfully",
+            data:user
         })
         
     }catch(err){
@@ -118,7 +121,7 @@ exports.login=async (req,res)=>{
                 expires:new Date(Date.now()+3*24*60*60*1000),
                 httpOnly:true
             }
-            res.cookie("token",token,options).stause(200).json({
+            res.cookie("token",token,options).status(200).json({
                 success:true,
                 token,
                 user,
@@ -133,9 +136,11 @@ exports.login=async (req,res)=>{
         }
 
     }catch(err){
+        console.log(err)
         return res.status(500).json({
             success:false,
-            message:"Could Not Login.Please Try Again"
+            message:"Could Not Login.Please Try Again",
+            error:err.message
         })
     }
 }

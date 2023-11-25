@@ -1,7 +1,7 @@
 const User=require("../Models/User")
 const mailSender=require("../Utils/mailSender")
 const bcrypt=require("bcrypt")
-
+const crypto=require("crypto")
 
 // INCOMPLETE NINCOMPOOP
 exports.resetPasswordToken=async (req,res)=>{
@@ -22,18 +22,21 @@ exports.resetPasswordToken=async (req,res)=>{
         const updatedDetails=await User.findOneAndUpdate({email:email},{token:token,resetPasswordExpires:Date.now()+5*60*1000},{new:true})
     
         const url="https://localhost:3000/update-password/"+token
-    
-        await mailSender(email,"Password Reset Link for your StudyNotion Account","Password Reset link->"+url)
+        const body="YOUR PASSWORD RESET LINK IS HERE:"+url
+        await mailSender(email,"Password Reset Link for your StudyNotion Account"+url,body)
     
         return res.json({
             success:true,
-            message:"Mail sent successfully please check mail to reset password"
+            message:"Mail sent successfully please check mail to reset password",
+            url:url
         })
 
     }catch(err){
+        console.log(err)
         return res.json({
             success:false,
-            message:"There was some error while resetting your password"
+            message:"There was some error while resetting your password",
+            err
         })
     }
 

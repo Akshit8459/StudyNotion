@@ -67,7 +67,13 @@ exports.createCourse=async (req,res)=>{
 
 exports.showAllCourses=async (req,res)=>{
     try{
-        const allCourses= await Course.find({},{courseName:true,price:true,thumbnail:true,instructor:true}).populate("instructor").exec()
+        const allCourses= await Course.find({},{courseName:true,price:true,thumbnail:true,instructor:true}).populate("category").populate("ratingsAndReviews").populate({
+            path:"instructor",
+            populate:{path:"additionalDetails"}
+        }).populate({
+            path:"courseContent",
+            populate:({path:"subSection"}).exec()
+        })
 
         return res.status(200).json({
             success:true,
@@ -79,6 +85,39 @@ exports.showAllCourses=async (req,res)=>{
         return res.status(500).json({
             succes:false,
             message:"Failed to fetch all course"
+        })
+    }
+}
+
+exports.getCourseDetail=async (req,res)=>{
+    try{
+        const {courseId}=req.body
+
+        const courseDetails=await Course.findById({courseId}).populate("category").populate("ratingsAndReviews").populate({
+            path:"instructor",
+            populate:{path:"additionalDetails"}
+        }).populate({
+            path:"courseContent",
+            populate:({path:"subSection"}).exec()
+        })
+
+        if(!courseDetails){
+            return res.status(400).json({
+                success:true,
+                message:"No such course found"
+            })
+        }
+
+        return res.status(200).json({
+            success:true,
+            message:"Course Fetched Successfully",
+            data:courseDetails
+        })
+
+    }catch(err){
+        return res.status(500).json({
+            succes:false,
+            message:"error while fetching courses"
         })
     }
 }

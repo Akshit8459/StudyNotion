@@ -16,7 +16,7 @@ const mailSender=async(email,title,body)=>{
             from:"StudyNotion || An EdTech Platform- by Akshit ",
             to:email,
             subject:title,
-            HTML:body
+            HTML:"<h1>"+body+"</h1>"
         })
         console.log(info)
         return info

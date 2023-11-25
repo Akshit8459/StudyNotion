@@ -49,3 +49,40 @@ exports.showAllTags=async (req,res)=>{
         })
     }
 }
+
+exports.tagPageDetails=async (req,res)=>{
+    try{
+
+        const {tagId}=req.body
+        const selectedTag=await Tag.findById(tagId).populate("courses").exec()
+
+        if(!selectedTag){
+            return res.status(404).json({
+                success:false,
+                message:"Data not found"
+            })
+        }
+
+        const diffrentTags=await Tag.find({_id:{$ne:tagId}}).populate("courses").exec()
+
+        //aggregate function to get top 10 selleing(highest enrolled) courses
+
+
+        // **************************************************************
+
+        return res.status(200).json({
+            success:true,
+            data:{
+                selectedTag,
+                diffrentTags,
+                // topSellingTags
+            }
+        })
+
+    }catch(err){
+        return res.status(500).json({
+            success:false,
+            message:"error while fetching tag page details"
+        })
+    }
+}
