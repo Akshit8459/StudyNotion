@@ -15,7 +15,7 @@ exports.createSection =async (req,res)=>{
             })
         }
 
-        const newSection=await Section.create({name:sectionName})
+        const newSection=await Section.create({sectionName:sectionName})
 
         const updatedCourseDetails=await Course.findByIdAndUpdate(courseId,
             {$push:{courseContent:newSection._id}},
@@ -47,7 +47,7 @@ exports.updateSection =async (req,res)=>{
             })
         }
 
-        const newSection=await Section.findByIdAndUpdate(sectionId,{name:sectionName},{new:true})
+        const newSection=await Section.findByIdAndUpdate(sectionId,{sectionName:sectionName},{new:true})
 
         return res.status(200).json({
             success:true,

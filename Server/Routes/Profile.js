@@ -3,7 +3,7 @@ const router=express.Router()
 const {auth}=require("../Middlewares/Auth")   
 const {deleteAccount,getAllUserDetails,updateProfile,updateDisplayPictures,getEnrolledCourses}=require("../Controllers/Profile")
 
-router.delete("/deleteprofile",deleteAccount)
+router.delete("/deleteprofile",auth,deleteAccount)
 router.put("/updateprofile",auth,updateProfile)
 router.get("/getuserdetails",auth,getAllUserDetails)
 

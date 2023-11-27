@@ -36,7 +36,7 @@ exports.signUp=async (req,res)=>{
 
         const recentOTP=await OTP.find({email}).sort({createdAt:-1}).limit(1)
 
-        if(recentOTP.length==0){
+        if(recentOTP[0].length==0){
             return res.status(400).json({
                 success:false,
                 message:"OTP not Found"
@@ -79,7 +79,8 @@ exports.signUp=async (req,res)=>{
         console.log("Error while signing up:",err.message)
         return res.status(500).json({
             success:false,
-            message:"User Cannot Be Registered.Please Try Again"
+            message:"User Cannot Be Registered.Please Try Again",
+            error:err.message
         })
 
     }

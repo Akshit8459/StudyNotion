@@ -18,8 +18,8 @@ exports.updateProfile=async (req,res)=>{
         }
 
         const userDetails=await User.findById(id)
-        console.log("userDetails=>",userDetails.additionalDetails)
-        const profileDetails=await Profile.findByIdAndUpdate({id:userDetails.additionalDetails},{dateOfBirth:dateOfBirth,about:about,gender:gender,contactNumber:contactNumber},{new:true})
+        console.log("userDetails=>",userDetails.additionalDetails.toString());
+        const profileDetails=await Profile.findByIdAndUpdate(userDetails.additionalDetails.toString(),{dateOfBirth:dateOfBirth,about:about,gender:gender,contactNumber:contactNumber},{new:true})
 
         return res.status(200).json({
             success:true,
@@ -41,7 +41,7 @@ exports.deleteAccount=async (req,res)=>{
     try{
 
         const id=req.user.id
-        const userDetails=await User.findById({id})
+        const userDetails=await User.findById(id)
         if(!userDetails){
             return res.status(400).json({
                 success:false,
@@ -53,7 +53,7 @@ exports.deleteAccount=async (req,res)=>{
         //take course id from User and update($pull) Courses.studentsEnrolled
         //multiple course id will come ? how to loop
 
-        await Profile.findByIdAndDelete({id:userDetails.additionalDetails})
+        await Profile.findByIdAndDelete(userDetails.additionalDetails.toString())
         await User.findByIdAndDelete(id)
 
         return res.status(200).json({
@@ -62,6 +62,8 @@ exports.deleteAccount=async (req,res)=>{
         })
 
     }catch(err){
+
+        console.log("deleting profile error->",err)
         return res.status(500).json({
             success:false,
             message:"Error While Deleting Account"
