@@ -9,6 +9,7 @@ import Timeline from '../Components/core/HomePage/Timeline'
 import LearningLanguages from '../Components/core/HomePage/LearningLanguages'
 import InstructorSection from '../Components/core/HomePage/InstructorSection'
 import Footer from '../Components/Common/Footer'
+import ExploreMore from '../Components/core/HomePage/ExploreMore'
 
 const Home = () => {
   return (
@@ -56,6 +57,7 @@ const Home = () => {
             />
             </div>
 
+            <ExploreMore/>
 
 
 
